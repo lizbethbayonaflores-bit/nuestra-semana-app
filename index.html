@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eaf3eb">
+  <title>Nuestra Semana · Organizador familiar</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <main>
+    <header class="header">
+      <div>
+        <p class="eyebrow">UN POCO DE ORDEN, MÁS TIEMPO JUNTOS</p>
+        <h1>Nuestra Semana<span aria-hidden="true"> ✿</span></h1>
+        <p class="subtitle">Las aventuras y rutinas de tu familia, en un solo lugar.</p>
+      </div>
+      <button id="add-button" class="primary">＋ Añadir actividad</button>
+    </header>
+
+    <section class="overview" aria-label="Perfiles de tus hijos">
+      <article class="profile child1">
+        <span id="child1-avatar" class="avatar" aria-hidden="true">H</span>
+        <div>
+          <h2 data-name="child1">Hijo 1</h2>
+          <p id="child1-count">0 actividades esta semana</p>
+        </div>
+      </article>
+      <article class="profile child2">
+        <span id="child2-avatar" class="avatar" aria-hidden="true">H</span>
+        <div>
+          <h2 data-name="child2">Hijo 2</h2>
+          <p id="child2-count">0 actividades esta semana</p>
+        </div>
+      </article>
+      <article class="routine">
+        <div>
+          <h2>A tu manera</h2>
+          <p>Personaliza los nombres solo en este navegador.</p>
+        </div>
+        <button id="names-button" class="secondary">Personalizar nombres</button>
+      </article>
+    </section>
+
+    <section class="planner" aria-labelledby="planner-title">
+      <div class="toolbar">
+        <div>
+          <h2 id="planner-title">El plan de la semana</h2>
+          <p>De lunes a domingo · horario habitual</p>
+        </div>
+        <div class="filters" role="group" aria-label="Filtrar por hijo">
+          <button data-filter="all" aria-pressed="true">Todos</button>
+          <button data-name="child1" data-filter="child1" aria-pressed="false">Hijo 1</button>
+          <button data-name="child2" data-filter="child2" aria-pressed="false">Hijo 2</button>
+        </div>
+      </div>
+      <p id="storage-warning" class="warning" role="alert" hidden></p>
+      <p id="conflict-summary" class="warning" hidden></p>
+      <p id="status" role="status" aria-live="polite"></p>
+      <div id="week" class="week"></div>
+      <div class="legend">
+        <span>
+          <i class="dot child1-dot"></i>
+          <span data-name="child1">Hijo 1</span>
+        </span>
+        <span>
+          <i class="dot child2-dot"></i>
+          <span data-name="child2">Hijo 2</span>
+        </span>
+        <span><i class="dot both-dot"></i>Ambos hijos</span>
+      </div>
+    </section>
+
+    <footer>
+      Hecho para su familia. Las actividades se guardan en este navegador y dispositivo.
+    </footer>
+  </main>
+
+  <dialog id="activity-dialog" aria-labelledby="dialog-title">
+    <form id="activity-form">
+      <div class="dialog-header">
+        <h2 id="dialog-title">Añadir actividad</h2>
+        <button type="button" id="close-dialog" class="icon-button" aria-label="Cerrar formulario">✕</button>
+      </div>
+
+      <label>
+        Actividad
+        <input name="title" required maxlength="100" placeholder="¿Qué tienen planeado?">
+      </label>
+
+      <div class="form-row">
+        <label>
+          ¿Para quién?
+          <select name="child">
+            <option value="both">Ambos hijos</option>
+            <option data-name="child1" value="child1">Hijo 1</option>
+            <option data-name="child2" value="child2">Hijo 2</option>
+          </select>
+        </label>
+        <label>
+          Día
+          <select name="day">
+            <option value="0">Lunes</option>
+            <option value="1">Martes</option>
+            <option value="2">Miércoles</option>
+            <option value="3">Jueves</option>
+            <option value="4">Viernes</option>
+            <option value="5">Sábado</option>
+            <option value="6">Domingo</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="form-row">
+        <label>
+          Hora de inicio
+          <input name="start" type="time" required>
+        </label>
+        <label>
+          Hora de fin
+          <input name="end" type="time" required>
+        </label>
+      </div>
+
+      <label>
+        Lugar <span class="optional">(opcional)</span>
+        <input name="location" maxlength="160" placeholder="¿Dónde será?">
+      </label>
+
+      <p id="form-error" class="warning" role="alert" hidden></p>
+      <p id="form-conflicts" class="warning" role="status" hidden></p>
+      <p class="form-note">
+        Si hay un cruce, puedes guardar igualmente; quedará señalado en el horario.
+      </p>
+
+      <div class="dialog-actions">
+        <button type="button" id="cancel-dialog" class="secondary">Cancelar</button>
+        <button type="submit" class="primary">Guardar actividad</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="delete-dialog" aria-labelledby="delete-title">
+    <h2 id="delete-title">Eliminar actividad</h2>
+    <p id="delete-description"></p>
+    <p>Se eliminará de este navegador.</p>
+    <div class="dialog-actions">
+      <button id="cancel-delete" class="secondary">Cancelar</button>
+      <button id="confirm-delete" class="danger">Eliminar actividad</button>
+    </div>
+  </dialog>
+
+  <dialog id="names-dialog" aria-labelledby="names-title">
+    <form id="names-form">
+      <h2 id="names-title">Personalizar nombres</h2>
+      <p>Estos nombres se guardan únicamente en este navegador. No se envían a GitHub.</p>
+      <label>
+        Nombre del primer perfil
+        <input name="child1" required maxlength="40">
+      </label>
+      <label>
+        Nombre del segundo perfil
+        <input name="child2" required maxlength="40">
+      </label>
+      <p id="names-error" class="warning" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" id="cancel-names" class="secondary">Cancelar</button>
+        <button type="submit" class="primary">Guardar nombres</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
