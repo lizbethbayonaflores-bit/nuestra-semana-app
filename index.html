@@ -19,56 +19,76 @@
       <button id="add-button" class="primary">＋ Añadir actividad</button>
     </header>
 
-    <section class="overview" aria-label="Perfiles de tus hijos">
+    <section class="overview" aria-label="Perfiles de tu familia">
       <article class="profile child1">
         <span id="child1-avatar" class="avatar" aria-hidden="true">H</span>
         <div>
-          <h2 data-name="child1">Hijo 1</h2>
+          <h2 data-name="child1">Persona 1</h2>
           <p id="child1-count">0 actividades esta semana</p>
         </div>
       </article>
+
       <article class="profile child2">
         <span id="child2-avatar" class="avatar" aria-hidden="true">H</span>
         <div>
-          <h2 data-name="child2">Hijo 2</h2>
+          <h2 data-name="child2">Persona 2</h2>
           <p id="child2-count">0 actividades esta semana</p>
         </div>
       </article>
-      <article class="routine">
+
+      <article class="profile adult">
+        <span id="adult-avatar" class="avatar" aria-hidden="true">P</span>
         <div>
-          <h2>A tu manera</h2>
-          <p>Personaliza los nombres solo en este navegador.</p>
+          <h2 data-name="adult">Persona 3</h2>
+          <p id="adult-count">0 actividades esta semana</p>
         </div>
-        <button id="names-button" class="secondary">Personalizar nombres</button>
       </article>
     </section>
+
+    <div class="settings-bar">
+      <button id="names-button" class="secondary">Personalizar nombres</button>
+      <button id="backup-button" class="secondary">Copia de seguridad</button>
+    </div>
 
     <section class="planner" aria-labelledby="planner-title">
       <div class="toolbar">
         <div>
           <h2 id="planner-title">El plan de la semana</h2>
-          <p>De lunes a domingo · horario habitual</p>
+          <p id="week-label"></p>
         </div>
-        <div class="filters" role="group" aria-label="Filtrar por hijo">
+        <div class="filters" role="group" aria-label="Filtrar por persona">
           <button data-filter="all" aria-pressed="true">Todos</button>
-          <button data-name="child1" data-filter="child1" aria-pressed="false">Hijo 1</button>
-          <button data-name="child2" data-filter="child2" aria-pressed="false">Hijo 2</button>
+          <button data-name="child1" data-filter="child1" aria-pressed="false">Persona 1</button>
+          <button data-name="child2" data-filter="child2" aria-pressed="false">Persona 2</button>
+          <button data-name="adult" data-filter="adult" aria-pressed="false">Persona 3</button>
         </div>
       </div>
+
+      <nav class="week-nav" aria-label="Cambiar semana">
+        <button id="previous-week" class="secondary">← Anterior</button>
+        <button id="current-week" class="secondary">Esta semana</button>
+        <button id="next-week" class="secondary">Siguiente →</button>
+      </nav>
+
       <p id="storage-warning" class="warning" role="alert" hidden></p>
       <p id="conflict-summary" class="warning" hidden></p>
       <p id="status" role="status" aria-live="polite"></p>
       <div id="week" class="week"></div>
+
       <div class="legend">
         <span>
           <i class="dot child1-dot"></i>
-          <span data-name="child1">Hijo 1</span>
+          <span data-name="child1">Persona 1</span>
         </span>
         <span>
           <i class="dot child2-dot"></i>
-          <span data-name="child2">Hijo 2</span>
+          <span data-name="child2">Persona 2</span>
         </span>
-        <span><i class="dot both-dot"></i>Ambos hijos</span>
+        <span>
+          <i class="dot adult-dot"></i>
+          <span data-name="adult">Persona 3</span>
+        </span>
+        <span><i class="dot both-dot"></i>Varias personas</span>
       </div>
     </section>
 
@@ -89,28 +109,34 @@
         <input name="title" required maxlength="100" placeholder="¿Qué tienen planeado?">
       </label>
 
-      <div class="form-row">
-        <label>
-          ¿Para quién?
-          <select name="child">
-            <option value="both">Ambos hijos</option>
-            <option data-name="child1" value="child1">Hijo 1</option>
-            <option data-name="child2" value="child2">Hijo 2</option>
-          </select>
-        </label>
-        <label>
-          Día
-          <select name="day">
-            <option value="0">Lunes</option>
-            <option value="1">Martes</option>
-            <option value="2">Miércoles</option>
-            <option value="3">Jueves</option>
-            <option value="4">Viernes</option>
-            <option value="5">Sábado</option>
-            <option value="6">Domingo</option>
-          </select>
-        </label>
-      </div>
+      <label id="edit-scope-label" hidden>
+        ¿Qué quieres modificar?
+        <select name="scope">
+          <option value="single">Solo esta actividad</option>
+          <option value="series">Toda la serie</option>
+        </select>
+      </label>
+
+      <fieldset>
+        <legend>¿Quiénes participan?</legend>
+        <div id="people-options" class="checkbox-grid"></div>
+        <button id="both-children" type="button" class="secondary">Ambos hijos</button>
+      </fieldset>
+
+      <fieldset>
+        <legend>Días de la semana</legend>
+        <div id="day-options" class="checkbox-grid"></div>
+      </fieldset>
+
+      <label class="check-label">
+        <input name="weekly" type="checkbox">
+        Repetir semanalmente
+      </label>
+
+      <p class="form-note">
+        Sin repetición, se guarda solo en la semana que estás viendo.
+        Una modificación individual se separa de su serie; las demás repeticiones se conservan.
+      </p>
 
       <div class="form-row">
         <label>
@@ -130,6 +156,7 @@
 
       <p id="form-error" class="warning" role="alert" hidden></p>
       <p id="form-conflicts" class="warning" role="status" hidden></p>
+
       <p class="form-note">
         Si hay un cruce, puedes guardar igualmente; quedará señalado en el horario.
       </p>
@@ -144,7 +171,17 @@
   <dialog id="delete-dialog" aria-labelledby="delete-title">
     <h2 id="delete-title">Eliminar actividad</h2>
     <p id="delete-description"></p>
-    <p>Se eliminará de este navegador.</p>
+
+    <label id="delete-scope-label" hidden>
+      ¿Qué quieres eliminar?
+      <select id="delete-scope">
+        <option value="single">Solo esta actividad</option>
+        <option value="series">Toda la serie</option>
+      </select>
+    </label>
+
+    <p>Los cambios individuales anteriores ya separados de la serie se mantienen.</p>
+
     <div class="dialog-actions">
       <button id="cancel-delete" class="secondary">Cancelar</button>
       <button id="confirm-delete" class="danger">Eliminar actividad</button>
@@ -155,20 +192,58 @@
     <form id="names-form">
       <h2 id="names-title">Personalizar nombres</h2>
       <p>Estos nombres se guardan únicamente en este navegador. No se envían a GitHub.</p>
+
       <label>
         Nombre del primer perfil
         <input name="child1" required maxlength="40">
       </label>
+
       <label>
         Nombre del segundo perfil
         <input name="child2" required maxlength="40">
       </label>
+
+      <label>
+        Nombre del tercer perfil
+        <input name="adult" required maxlength="40">
+      </label>
+
       <p id="names-error" class="warning" role="alert" hidden></p>
+
       <div class="dialog-actions">
         <button type="button" id="cancel-names" class="secondary">Cancelar</button>
         <button type="submit" class="primary">Guardar nombres</button>
       </div>
     </form>
+  </dialog>
+
+  <dialog id="backup-dialog" aria-labelledby="backup-title">
+    <h2 id="backup-title">Copia de seguridad</h2>
+    <p>
+      Este texto contiene tus datos personales. Guárdalo en una nota privada;
+      no lo pegues en GitHub ni en el chat.
+    </p>
+
+    <label>
+      Tu copia actual
+      <textarea id="backup-output" readonly rows="6"></textarea>
+    </label>
+
+    <button id="copy-backup" class="secondary">Copiar texto</button>
+    <p id="backup-status" role="status"></p>
+
+    <details>
+      <summary>Restaurar una copia</summary>
+      <label>
+        Pega aquí tu copia privada
+        <textarea id="backup-input" rows="6"></textarea>
+      </label>
+      <button id="restore-backup" class="danger">Restaurar y reemplazar datos actuales</button>
+    </details>
+
+    <div class="dialog-actions">
+      <button id="close-backup" class="secondary">Cerrar</button>
+    </div>
   </dialog>
 </body>
 </html>
