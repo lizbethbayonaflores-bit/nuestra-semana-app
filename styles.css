@@ -117,7 +117,7 @@ button:hover {
 
 .overview {
   display: grid;
-  grid-template-columns: 1fr 1fr 1.5fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   margin: 32px 0;
 }
@@ -604,5 +604,132 @@ select {
 
   .subtitle {
     font-size: 14px;
+  }
+}
+
+.adult {
+  background: #f9e5e1;
+}
+
+.adult-dot {
+  background: #d79388;
+}
+
+.settings-bar,
+.week-nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+fieldset {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin: 16px 0;
+  padding: 14px;
+  min-width: 0;
+}
+
+legend {
+  font-size: 13px;
+  font-weight: 650;
+  padding: 0 6px;
+}
+
+.checkbox-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.check-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 9px;
+  border-radius: 8px;
+  background: #f1f5ec;
+}
+
+.check-label input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--green);
+}
+
+#both-children {
+  margin-top: 12px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.series-tag {
+  font-size: 11px;
+  color: #667363;
+}
+
+label[hidden] {
+  display: none;
+}
+
+textarea {
+  width: 100%;
+  border: 1px solid #ced9c9;
+  border-radius: 10px;
+  padding: 12px;
+  resize: vertical;
+  font: inherit;
+  font-size: 12px;
+}
+
+textarea:focus-visible {
+  outline: 3px solid #5b8670;
+  outline-offset: 3px;
+}
+
+summary {
+  cursor: pointer;
+  margin: 16px 0;
+}
+
+@media (max-width: 999px) {
+  .overview {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .profile {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 600px) {
+  .overview {
+    grid-template-columns: 1fr;
+  }
+
+  .profile {
+    flex-wrap: nowrap;
+  }
+
+  .filters {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .filters button {
+    padding: 9px 12px;
+  }
+
+  .legend {
+    flex-wrap: wrap;
+  }
+
+  .card-actions button {
+    padding: 8px 4px;
+    font-size: 12px;
   }
 }
